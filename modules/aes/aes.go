@@ -40,6 +40,8 @@ func AesCFBEncrypt(plaintext []byte, paddingType ...string) (ciphertext []byte,
 			plaintext = ZeroPadding(plaintext, aes.BlockSize)
 		case "PKCS5Padding":
 			plaintext = PKCS5Padding(plaintext, aes.BlockSize)
+		case "PKCS7Padding":
+			plaintext = PKCS7Padding(plaintext, aes.BlockSize)
 		}
 	} else {
 		plaintext = PKCS5Padding(plaintext, aes.BlockSize)
@@ -75,7 +77,9 @@ func AesCFBDecrypt(ciphertext []byte, paddingType ...string) (plaintext []byte,
 		case "ZeroUnPadding":
 			plaintext = ZeroUnPadding(ciphertext)
 		case "PKCS5UnPadding":
-			plaintext = ZeroUnPadding(ciphertext)
+			plaintext = PKCS5UnPadding(ciphertext)
+		case "PKCS7UnPadding":
+			plaintext = PKCS7UnPadding(ciphertext)
 		}
 	} else {
 		plaintext = PKCS5UnPadding(ciphertext)
