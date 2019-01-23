@@ -2,11 +2,9 @@
 package gocrypto
 
 import (
-	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"encoding/binary"
 	"errors"
 	"fmt"
 	"io"
@@ -22,23 +20,12 @@ func SetAesKey(key string) (err error) {
 	syncAesMutex.Lock()
 	defer syncAesMutex.Unlock()
 	b := []byte(key)
+
 	if len(b) == 16 || len(b) == 24 || len(b) == 32 {
 		commonAeskey = b
 		return nil
 	}
-	b = bytesCombine([]byte(key), int64ToBytes(0000000000000000000000))
-	fmt.Println(len(b))
-	return
-}
-
-func bytesCombine(pBytes ...[]byte) []byte {
-	return bytes.Join(pBytes, []byte(""))
-}
-
-func int64ToBytes(i int64) []byte {
-	var buf = make([]byte, 8)
-	binary.BigEndian.PutUint64(buf, uint64(i))
-	return buf
+	return fmt.Errorf("key size is not 16 or 24 or 32, but %d", len(b))
 }
 
 func AesCFBEncrypt(plaintext []byte, paddingType ...string) (ciphertext []byte,
